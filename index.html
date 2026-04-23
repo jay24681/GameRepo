@@ -10,6 +10,7 @@ body {
     font-family: Arial;
 }
 
+/* Maze container */
 #maze {
     position: relative;
     width: 500px;
@@ -18,6 +19,7 @@ body {
     background-color: red; /* walls */
 }
 
+/* Safe path */
 #path {
     position: absolute;
     width: 350px;
@@ -27,6 +29,7 @@ body {
     left: 75px;
 }
 
+/* Start and End */
 #start, #end {
     position: absolute;
     width: 70px;
@@ -35,11 +38,14 @@ body {
     color: white;
     line-height: 50px;
     font-weight: bold;
+    text-align: center;
+    cursor: pointer;
 }
 
 #start { left: 0; top: 100px; }
 #end { right: 0; top: 100px; }
 
+/* Jump scare */
 #scare {
     display: none;
     position: fixed;
@@ -47,6 +53,7 @@ body {
     height: 100%;
     top: 0;
     left: 0;
+    z-index: 999;
 }
 </style>
 </head>
@@ -62,6 +69,7 @@ body {
     <div id="end">END</div>
 </div>
 
+<!-- Jump scare assets -->
 <img id="scare" src="scare.jpg">
 <audio id="scream" src="scream.mp3"></audio>
 
@@ -71,7 +79,7 @@ let started = false;
 const start = document.getElementById("start");
 const end = document.getElementById("end");
 const maze = document.getElementById("maze");
-const scare = document.getElementById("scare333
+const scare = document.getElementById("scare");
 const scream = document.getElementById("scream");
 
 // Start game
@@ -79,9 +87,9 @@ start.addEventListener("mouseover", () => {
     started = true;
 });
 
-// Lose if mouse leaves path (hits walls)
-maze.addEventListener("mouseleave", () => {
-    if (started) {
+// Detect hitting walls (anything that's NOT path or start)
+maze.addEventListener("mouseover", (e) => {
+    if (started && e.target.id !== "path" && e.target.id !== "start") {
         alert("You lost!");
         started = false;
     }
