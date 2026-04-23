@@ -25,14 +25,14 @@ body {
     background-color: white;
 }
 
-/* COMPLEX MAZE PATH */
-#p1 { width: 80px; height: 40px; top: 180px; left: 90px; }
-#p2 { width: 40px; height: 140px; top: 100px; left: 170px; }
-#p3 { width: 180px; height: 40px; top: 100px; left: 210px; }
-#p4 { width: 40px; height: 160px; top: 100px; left: 390px; }
-#p5 { width: 160px; height: 40px; top: 260px; left: 230px; }
-#p6 { width: 40px; height: 120px; top: 260px; left: 190px; }
-#p7 { width: 140px; height: 40px; top: 320px; left: 40px; }
+/* CLEAN MAZE DESIGN */
+#p1 { width: 100px; height: 40px; top: 180px; left: 70px; }
+#p2 { width: 40px; height: 160px; top: 120px; left: 170px; }
+#p3 { width: 200px; height: 40px; top: 120px; left: 210px; }
+#p4 { width: 40px; height: 160px; top: 120px; left: 410px; }
+#p5 { width: 200px; height: 40px; top: 280px; left: 210px; }
+#p6 { width: 40px; height: 120px; top: 280px; left: 170px; }
+#p7 { width: 150px; height: 40px; top: 340px; left: 20px; }
 
 /* START + END */
 #start, #end {
@@ -49,8 +49,17 @@ body {
     cursor: pointer;
 }
 
-#start { top: 180px; left: 0; }
-#end { top: 320px; left: 140px; }
+/* START TOUCHES PATH DIRECTLY (no gap) */
+#start {
+    top: 180px;
+    left: 0;
+}
+
+/* END aligned properly to final path */
+#end {
+    top: 340px;
+    left: 170px;
+}
 
 /* SCARY IMAGE */
 #scare {
@@ -74,7 +83,7 @@ body {
 
     <div id="start">START</div>
 
-    <!-- Maze path -->
+    <!-- PATH -->
     <div class="path" id="p1"></div>
     <div class="path" id="p2"></div>
     <div class="path" id="p3"></div>
@@ -107,10 +116,10 @@ start.addEventListener("mouseover", () => {
 document.addEventListener("mouseover", (e) => {
     if (!started) return;
 
-    const safe = ["start", "end"];
+    const safeZones = ["start", "end"];
     const isPath = e.target.classList.contains("path");
 
-    if (!safe.includes(e.target.id) && !isPath) {
+    if (!safeZones.includes(e.target.id) && !isPath) {
         alert("You lost!");
         started = false;
     }
