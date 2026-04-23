@@ -10,7 +10,7 @@ body {
     font-family: Arial;
 }
 
-/* MAZE CONTAINER */
+/* MAZE AREA */
 #maze {
     position: relative;
     width: 520px;
@@ -19,22 +19,33 @@ body {
     background-color: red; /* walls */
 }
 
-/* SAFE PATH BLOCKS */
+/* SAFE PATH */
 .path {
     position: absolute;
     background-color: white;
 }
 
-/* SIMPLE BUT COMPLEX-LOOKING MAZE (no overlap issues) */
-#p1 { width: 120px; height: 40px; top: 180px; left: 80px; }
-#p2 { width: 40px; height: 140px; top: 120px; left: 200px; }
-#p3 { width: 220px; height: 40px; top: 120px; left: 240px; }
-#p4 { width: 40px; height: 180px; top: 120px; left: 460px; }
-#p5 { width: 220px; height: 40px; top: 300px; left: 240px; }
-#p6 { width: 40px; height: 120px; top: 300px; left: 200px; }
+/* =========================
+   FIXED MAZE LAYOUT
+   (NO GAP AT START)
+   ========================= */
+
+/* FIRST PATH TOUCHES START DIRECTLY */
+#p1 {
+    width: 120px;
+    height: 40px;
+    top: 180px;
+    left: 70px; /* IMPORTANT: touches START exactly */
+}
+
+#p2 { width: 40px; height: 140px; top: 120px; left: 190px; }
+#p3 { width: 220px; height: 40px; top: 120px; left: 230px; }
+#p4 { width: 40px; height: 180px; top: 120px; left: 450px; }
+#p5 { width: 220px; height: 40px; top: 300px; left: 230px; }
+#p6 { width: 40px; height: 120px; top: 300px; left: 190px; }
 #p7 { width: 180px; height: 40px; top: 360px; left: 40px; }
 
-/* START (fully visible + not overlapped) */
+/* START (NOW CONNECTED TO PATH) */
 #start {
     position: absolute;
     width: 70px;
@@ -46,10 +57,9 @@ body {
     top: 180px;
     left: 0;
     z-index: 10;
-    cursor: pointer;
 }
 
-/* END (fully outside path blocks, no overlap) */
+/* END (properly aligned to final path) */
 #end {
     position: absolute;
     width: 70px;
@@ -59,9 +69,8 @@ body {
     font-weight: bold;
     line-height: 40px;
     top: 360px;
-    left: 200px;
+    left: 190px;
     z-index: 10;
-    cursor: pointer;
 }
 
 /* SCARY IMAGE */
@@ -80,7 +89,7 @@ body {
 <body>
 
 <h1>Scary Maze Game</h1>
-<p>Move carefully from START to END without touching red walls.</p>
+<p>Move from START to END without touching red walls.</p>
 
 <div id="maze">
 
