@@ -19,14 +19,14 @@ body {
     background-color: red; /* walls */
 }
 
-/* Safe path */
+/* Safe path (CONNECTED to start and end) */
 #path {
     position: absolute;
-    width: 350px;
+    width: 360px;
     height: 50px;
     background-color: white;
     top: 100px;
-    left: 75px;
+    left: 70px; /* matches start width */
 }
 
 /* Start and End */
@@ -39,7 +39,6 @@ body {
     line-height: 50px;
     font-weight: bold;
     text-align: center;
-    cursor: pointer;
 }
 
 #start { left: 0; top: 100px; }
@@ -69,7 +68,6 @@ body {
     <div id="end">END</div>
 </div>
 
-<!-- Jump scare assets -->
 <img id="scare" src="scare.jpg">
 <audio id="scream" src="scream.mp3"></audio>
 
@@ -78,7 +76,6 @@ let started = false;
 
 const start = document.getElementById("start");
 const end = document.getElementById("end");
-const maze = document.getElementById("maze");
 const scare = document.getElementById("scare");
 const scream = document.getElementById("scream");
 
@@ -87,9 +84,13 @@ start.addEventListener("mouseover", () => {
     started = true;
 });
 
-// Detect hitting walls (anything that's NOT path or start)
-maze.addEventListener("mouseover", (e) => {
-    if (started && e.target.id !== "path" && e.target.id !== "start") {
+// Lose when touching anything NOT safe
+document.addEventListener("mouseover", (e) => {
+    if (!started) return;
+
+    const safeZones = ["start", "path", "end"];
+
+    if (!safeZones.includes(e.target.id)) {
         alert("You lost!");
         started = false;
     }
