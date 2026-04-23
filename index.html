@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Scary Maze Game</title>
+
+<style>
+body {
+    text-align: center;
+    font-family: Arial;
+}
+
+#maze {
+    position: relative;
+    width: 500px;
+    height: 250px;
+    margin: auto;
+    background-color: red; /* walls */
+}
+
+#path {
+    position: absolute;
+    width: 350px;
+    height: 50px;
+    background-color: white;
+    top: 100px;
+    left: 75px;
+}
+
+#start, #end {
+    position: absolute;
+    width: 70px;
+    height: 50px;
+    background-color: green;
+    color: white;
+    line-height: 50px;
+    font-weight: bold;
+}
+
+#start { left: 0; top: 100px; }
+#end { right: 0; top: 100px; }
+
+#scare {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Scary Maze Game</h1>
+<p>Move your mouse from START to END without touching the walls.</p>
+
+<div id="maze">
+    <div id="start">START</div>
+    <div id="path"></div>
+    <div id="end">END</div>
+</div>
+
+<img id="scare" src="scare.jpg">
+<audio id="scream" src="scream.mp3"></audio>
+
+<script>
+let started = false;
+
+const start = document.getElementById("start");
+const end = document.getElementById("end");
+const maze = document.getElementById("maze");
+const scare = document.getElementById("scare333
+const scream = document.getElementById("scream");
+
+// Start game
+start.addEventListener("mouseover", () => {
+    started = true;
+});
+
+// Lose if mouse leaves path (hits walls)
+maze.addEventListener("mouseleave", () => {
+    if (started) {
+        alert("You lost!");
+        started = false;
+    }
+});
+
+// Win condition
+end.addEventListener("mouseover", () => {
+    if (started) {
+        scare.style.display = "block";
+        scream.play();
+    }
+});
+</script>
+
+</body>
+</html>
