@@ -19,33 +19,34 @@ body {
     background-color: red; /* walls */
 }
 
-/* SAFE PATH SEGMENTS */
+/* SAFE PATH */
 .path {
     position: absolute;
     background-color: white;
 }
 
-/* Maze layout (complex path) */
-#p1 { width: 60px; height: 40px; top: 180px; left: 60px; }
-#p2 { width: 40px; height: 140px; top: 100px; left: 120px; }
-#p3 { width: 200px; height: 40px; top: 100px; left: 160px; }
-#p4 { width: 40px; height: 160px; top: 100px; left: 360px; }
-#p5 { width: 180px; height: 40px; top: 260px; left: 200px; }
-#p6 { width: 40px; height: 100px; top: 260px; left: 160px; }
-#p7 { width: 120px; height: 40px; top: 320px; left: 20px; }
+/* COMPLEX MAZE PATH */
+#p1 { width: 80px; height: 40px; top: 180px; left: 90px; }
+#p2 { width: 40px; height: 140px; top: 100px; left: 170px; }
+#p3 { width: 180px; height: 40px; top: 100px; left: 210px; }
+#p4 { width: 40px; height: 160px; top: 100px; left: 390px; }
+#p5 { width: 160px; height: 40px; top: 260px; left: 230px; }
+#p6 { width: 40px; height: 120px; top: 260px; left: 190px; }
+#p7 { width: 140px; height: 40px; top: 320px; left: 40px; }
 
-/* START & END */
+/* START + END */
 #start, #end {
     position: absolute;
-    width: 60px;
+    width: 70px;
     height: 40px;
-    background-color: limegreen;
+    background-color: yellow;
     color: black;
     font-weight: bold;
     text-align: center;
     line-height: 40px;
     border: 2px solid black;
-    z-index: 10;
+    z-index: 9999;
+    cursor: pointer;
 }
 
 #start { top: 180px; left: 0; }
@@ -73,7 +74,7 @@ body {
 
     <div id="start">START</div>
 
-    <!-- Maze paths -->
+    <!-- Maze path -->
     <div class="path" id="p1"></div>
     <div class="path" id="p2"></div>
     <div class="path" id="p3"></div>
@@ -97,25 +98,25 @@ const end = document.getElementById("end");
 const scare = document.getElementById("scare");
 const scream = document.getElementById("scream");
 
-/* Start game */
+/* START GAME */
 start.addEventListener("mouseover", () => {
     started = true;
 });
 
-/* Lose condition */
+/* LOSE CONDITION */
 document.addEventListener("mouseover", (e) => {
     if (!started) return;
 
-    const safeZones = ["start", "end"];
+    const safe = ["start", "end"];
     const isPath = e.target.classList.contains("path");
 
-    if (!safeZones.includes(e.target.id) && !isPath) {
+    if (!safe.includes(e.target.id) && !isPath) {
         alert("You lost!");
         started = false;
     }
 });
 
-/* Win condition */
+/* WIN CONDITION */
 end.addEventListener("mouseover", () => {
     if (started) {
         scare.style.display = "block";
