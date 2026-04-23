@@ -10,41 +10,45 @@ body {
     font-family: Arial;
 }
 
-/* Maze container */
 #maze {
     position: relative;
     width: 500px;
-    height: 250px;
+    height: 400px;
     margin: auto;
     background-color: red; /* walls */
 }
 
-/* Safe path (CONNECTED to start and end) */
-#path {
+/* Maze path pieces */
+.path {
     position: absolute;
-    width: 360px;
-    height: 50px;
     background-color: white;
-    top: 100px;
-    left: 70px; /* matches start width */
 }
+
+/* Individual segments */
+#p1 { width: 80px; height: 40px; top: 180px; left: 0; }
+#p2 { width: 40px; height: 120px; top: 100px; left: 80px; }
+#p3 { width: 200px; height: 40px; top: 100px; left: 120px; }
+#p4 { width: 40px; height: 150px; top: 100px; left: 320px; }
+#p5 { width: 180px; height: 40px; top: 250px; left: 180px; }
+#p6 { width: 40px; height: 120px; top: 250px; left: 140px; }
+#p7 { width: 120px; height: 40px; top: 330px; left: 20px; }
 
 /* Start and End */
 #start, #end {
     position: absolute;
-    width: 70px;
-    height: 50px;
+    width: 60px;
+    height: 40px;
     background-color: green;
     color: white;
-    line-height: 50px;
+    line-height: 40px;
     font-weight: bold;
     text-align: center;
 }
 
-#start { left: 0; top: 100px; }
-#end { right: 0; top: 100px; }
+#start { top: 180px; left: 0; }
+#end { top: 330px; left: 140px; }
 
-/* Jump scare */
+/* Scare */
 #scare {
     display: none;
     position: fixed;
@@ -60,11 +64,20 @@ body {
 <body>
 
 <h1>Scary Maze Game</h1>
-<p>Move your mouse from START to END without touching the walls.</p>
+<p>Navigate carefully... don't touch the walls.</p>
 
 <div id="maze">
     <div id="start">START</div>
-    <div id="path"></div>
+
+    <!-- Maze path -->
+    <div class="path" id="p1"></div>
+    <div class="path" id="p2"></div>
+    <div class="path" id="p3"></div>
+    <div class="path" id="p4"></div>
+    <div class="path" id="p5"></div>
+    <div class="path" id="p6"></div>
+    <div class="path" id="p7"></div>
+
     <div id="end">END</div>
 </div>
 
@@ -84,19 +97,22 @@ start.addEventListener("mouseover", () => {
     started = true;
 });
 
-// Lose when touching anything NOT safe
+// Lose condition
 document.addEventListener("mouseover", (e) => {
     if (!started) return;
 
-    const safeZones = ["start", "path", "end"];
-
-    if (!safeZones.includes(e.target.id)) {
+    // Allowed areas
+    if (
+        e.target.id !== "start" &&
+        e.target.id !== "end" &&
+        !e.target.classList.contains("path")
+    ) {
         alert("You lost!");
         started = false;
     }
 });
 
-// Win condition
+// Win
 end.addEventListener("mouseover", () => {
     if (started) {
         scare.style.display = "block";
