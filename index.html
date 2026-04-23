@@ -10,74 +10,41 @@ body {
     font-family: Arial;
 }
 
-/* MAZE */
+/* Maze container */
 #maze {
     position: relative;
-    width: 520px;
-    height: 420px;
+    width: 500px;
+    height: 250px;
     margin: auto;
-    background-color: red;
+    background-color: red; /* walls */
 }
 
-/* ONE CONTINUOUS SAFE PATH (NOT SEPARATE BLOCKS) */
+/* Safe path (CONNECTED to start and end) */
 #path {
     position: absolute;
-    width: 450px;
-    height: 40px;
-    top: 180px;
-    left: 70px;
+    width: 360px;
+    height: 50px;
     background-color: white;
+    top: 100px;
+    left: 70px; /* matches start width */
 }
 
-/* vertical section */
-#path2 {
-    position: absolute;
-    width: 40px;
-    height: 200px;
-    top: 120px;
-    left: 480px;
-    background-color: white;
-}
-
-/* second horizontal */
-#path3 {
-    position: absolute;
-    width: 300px;
-    height: 40px;
-    top: 320px;
-    left: 180px;
-    background-color: white;
-}
-
-/* START */
-#start {
+/* Start and End */
+#start, #end {
     position: absolute;
     width: 70px;
-    height: 40px;
-    background-color: yellow;
-    border: 2px solid black;
+    height: 50px;
+    background-color: green;
+    color: white;
+    line-height: 50px;
     font-weight: bold;
-    line-height: 40px;
-    top: 180px;
-    left: 0;
-    z-index: 10;
+    text-align: center;
 }
 
-/* END */
-#end {
-    position: absolute;
-    width: 70px;
-    height: 40px;
-    background-color: yellow;
-    border: 2px solid black;
-    font-weight: bold;
-    line-height: 40px;
-    top: 320px;
-    left: 480px;
-    z-index: 10;
-}
+#start { left: 0; top: 100px; }
+#end { right: 0; top: 100px; }
 
-/* SCARY IMAGE */
+/* Jump scare */
 #scare {
     display: none;
     position: fixed;
@@ -93,19 +60,12 @@ body {
 <body>
 
 <h1>Scary Maze Game</h1>
-<p>Move from START to END without touching red.</p>
+<p>Move your mouse from START to END without touching the walls.</p>
 
 <div id="maze">
-
     <div id="start">START</div>
-
-    <!-- ONE CONNECTED PATH SYSTEM -->
     <div id="path"></div>
-    <div id="path2"></div>
-    <div id="path3"></div>
-
     <div id="end">END</div>
-
 </div>
 
 <img id="scare" src="scare.jpg">
@@ -119,27 +79,24 @@ const end = document.getElementById("end");
 const scare = document.getElementById("scare");
 const scream = document.getElementById("scream");
 
-/* START */
+// Start game
 start.addEventListener("mouseover", () => {
     started = true;
 });
 
-/* LOSE (anything NOT white path or start/end) */
+// Lose when touching anything NOT safe
 document.addEventListener("mouseover", (e) => {
     if (!started) return;
 
-    const safe = ["start", "end"];
-    const isPath = (e.target.id === "path" ||
-                    e.target.id === "path2" ||
-                    e.target.id === "path3");
+    const safeZones = ["start", "path", "end"];
 
-    if (!safe.includes(e.target.id) && !isPath) {
+    if (!safeZones.includes(e.target.id)) {
         alert("You lost!");
         started = false;
     }
 });
 
-/* WIN */
+// Win condition
 end.addEventListener("mouseover", () => {
     if (started) {
         scare.style.display = "block";
