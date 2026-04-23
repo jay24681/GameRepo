@@ -10,42 +10,46 @@ body {
     font-family: Arial;
 }
 
-/* MAZE AREA */
+/* MAZE */
 #maze {
     position: relative;
     width: 520px;
     height: 420px;
     margin: auto;
-    background-color: red; /* walls */
+    background-color: red;
 }
 
-/* SAFE PATH */
-.path {
+/* ONE CONTINUOUS SAFE PATH (NOT SEPARATE BLOCKS) */
+#path {
     position: absolute;
+    width: 450px;
+    height: 40px;
+    top: 180px;
+    left: 70px;
     background-color: white;
 }
 
-/* =========================
-   FIXED MAZE LAYOUT
-   (NO GAP AT START)
-   ========================= */
-
-/* FIRST PATH TOUCHES START DIRECTLY */
-#p1 {
-    width: 120px;
-    height: 40px;
-    top: 180px;
-    left: 70px; /* IMPORTANT: touches START exactly */
+/* vertical section */
+#path2 {
+    position: absolute;
+    width: 40px;
+    height: 200px;
+    top: 120px;
+    left: 480px;
+    background-color: white;
 }
 
-#p2 { width: 40px; height: 140px; top: 120px; left: 190px; }
-#p3 { width: 220px; height: 40px; top: 120px; left: 230px; }
-#p4 { width: 40px; height: 180px; top: 120px; left: 450px; }
-#p5 { width: 220px; height: 40px; top: 300px; left: 230px; }
-#p6 { width: 40px; height: 120px; top: 300px; left: 190px; }
-#p7 { width: 180px; height: 40px; top: 360px; left: 40px; }
+/* second horizontal */
+#path3 {
+    position: absolute;
+    width: 300px;
+    height: 40px;
+    top: 320px;
+    left: 180px;
+    background-color: white;
+}
 
-/* START (NOW CONNECTED TO PATH) */
+/* START */
 #start {
     position: absolute;
     width: 70px;
@@ -59,7 +63,7 @@ body {
     z-index: 10;
 }
 
-/* END (properly aligned to final path) */
+/* END */
 #end {
     position: absolute;
     width: 70px;
@@ -68,8 +72,8 @@ body {
     border: 2px solid black;
     font-weight: bold;
     line-height: 40px;
-    top: 360px;
-    left: 190px;
+    top: 320px;
+    left: 480px;
     z-index: 10;
 }
 
@@ -89,19 +93,16 @@ body {
 <body>
 
 <h1>Scary Maze Game</h1>
-<p>Move from START to END without touching red walls.</p>
+<p>Move from START to END without touching red.</p>
 
 <div id="maze">
 
     <div id="start">START</div>
 
-    <div class="path" id="p1"></div>
-    <div class="path" id="p2"></div>
-    <div class="path" id="p3"></div>
-    <div class="path" id="p4"></div>
-    <div class="path" id="p5"></div>
-    <div class="path" id="p6"></div>
-    <div class="path" id="p7"></div>
+    <!-- ONE CONNECTED PATH SYSTEM -->
+    <div id="path"></div>
+    <div id="path2"></div>
+    <div id="path3"></div>
 
     <div id="end">END</div>
 
@@ -118,17 +119,19 @@ const end = document.getElementById("end");
 const scare = document.getElementById("scare");
 const scream = document.getElementById("scream");
 
-/* START GAME */
+/* START */
 start.addEventListener("mouseover", () => {
     started = true;
 });
 
-/* LOSE CONDITION */
+/* LOSE (anything NOT white path or start/end) */
 document.addEventListener("mouseover", (e) => {
     if (!started) return;
 
     const safe = ["start", "end"];
-    const isPath = e.target.classList.contains("path");
+    const isPath = (e.target.id === "path" ||
+                    e.target.id === "path2" ||
+                    e.target.id === "path3");
 
     if (!safe.includes(e.target.id) && !isPath) {
         alert("You lost!");
@@ -136,7 +139,7 @@ document.addEventListener("mouseover", (e) => {
     }
 });
 
-/* WIN CONDITION */
+/* WIN */
 end.addEventListener("mouseover", () => {
     if (started) {
         scare.style.display = "block";
