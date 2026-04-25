@@ -15,27 +15,24 @@ h1 {
 }
 
 #levelText {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     margin-bottom: 15px;
 }
 
-/* Maze container */
 #maze {
     position: relative;
     width: 700px;
     height: 500px;
     margin: auto;
-    background-color: red; /* walls */
+    background-color: red;
 }
 
-/* Safe path */
 .path {
     position: absolute;
     background-color: white;
 }
 
-/* Start + End */
 #start, #end {
     position: absolute;
     width: 70px;
@@ -43,13 +40,12 @@ h1 {
     background-color: yellow;
     border: 2px solid black;
     font-weight: bold;
-    line-height: 40px;
     text-align: center;
+    line-height: 40px;
     z-index: 10;
     cursor: pointer;
 }
 
-/* Jumpscare */
 #scare {
     display: none;
     position: fixed;
@@ -66,7 +62,7 @@ h1 {
 
 <h1>Scary Maze Game</h1>
 <div id="levelText">Level 1</div>
-<p>Reach END without touching red walls.</p>
+<p>Reach END without touching the red walls.</p>
 
 <div id="maze">
     <div id="start">START</div>
@@ -87,73 +83,73 @@ const scare = document.getElementById("scare");
 const scream = document.getElementById("scream");
 const levelText = document.getElementById("levelText");
 
-/* ---------- LEVEL DATA ---------- */
+/* ---------- HELPERS ---------- */
 
-const levels = [
-    {
-        name: "Level 1",
-        start: { top: 220, left: 0 },
-        end: { top: 380, left: 560 },
-        paths: [
-            { width: 150, height: 40, top: 220, left: 70 },
-            { width: 40, height: 160, top: 100, left: 180 },
-            { width: 220, height: 40, top: 100, left: 180 },
-            { width: 40, height: 180, top: 100, left: 360 },
-            { width: 220, height: 40, top: 240, left: 360 },
-            { width: 40, height: 180, top: 240, left: 540 },
-            { width: 100, height: 40, top: 380, left: 460 }
-        ]
-    },
-
-    {
-        name: "Level 2",
-        start: { top: 100, left: 0 },
-        end: { top: 420, left: 600 },
-        paths: [
-            { width: 180, height: 40, top: 100, left: 70 },
-            { width: 40, height: 220, top: 100, left: 210 },
-            { width: 250, height: 40, top: 280, left: 210 },
-            { width: 40, height: 180, top: 280, left: 420 },
-            { width: 220, height: 40, top: 420, left: 420 }
-        ]
-    }
-];
-
-/* ---------- BUILD LEVEL ---------- */
-
-function loadLevel(levelIndex) {
-    document.querySelectorAll(".path").forEach(p => p.remove());
-
-    const level = levels[levelIndex];
-
-    levelText.textContent = level.name;
-
-    start.style.top = level.start.top + "px";
-    start.style.left = level.start.left + "px";
-
-    end.style.top = level.end.top + "px";
-    end.style.left = level.end.left + "px";
-
-    level.paths.forEach(segment => {
-        const div = document.createElement("div");
-        div.classList.add("path");
-
-        div.style.width = segment.width + "px";
-        div.style.height = segment.height + "px";
-        div.style.top = segment.top + "px";
-        div.style.left = segment.left + "px";
-
-        maze.appendChild(div);
-    });
-
-    started = false;
+function clearPaths() {
+    document.querySelectorAll(".path").forEach(path => path.remove());
 }
 
-/* ---------- GAME LOGIC ---------- */
+function createPath(width, height, top, left) {
+    const div = document.createElement("div");
+    div.classList.add("path");
+
+    div.style.width = width + "px";
+    div.style.height = height + "px";
+    div.style.top = top + "px";
+    div.style.left = left + "px";
+
+    maze.appendChild(div);
+}
+
+/* ---------- LOAD LEVEL ---------- */
+
+function loadLevel(level) {
+    clearPaths();
+    started = false;
+    currentLevel = level;
+
+    if (level === 1) {
+        levelText.textContent = "Level 1";
+
+        start.style.top = "220px";
+        start.style.left = "0px";
+
+        end.style.top = "380px";
+        end.style.left = "560px";
+
+        createPath(150, 40, 220, 70);
+        createPath(40, 160, 100, 180);
+        createPath(220, 40, 100, 180);
+        createPath(40, 180, 100, 360);
+        createPath(220, 40, 240, 360);
+        createPath(40, 180, 240, 540);
+        createPath(100, 40, 380, 460);
+    }
+
+    if (level === 2) {
+        levelText.textContent = "Level 2";
+
+        start.style.top = "80px";
+        start.style.left = "0px";
+
+        end.style.top = "420px";
+        end.style.left = "600px";
+
+        createPath(200, 40, 80, 70);
+        createPath(40, 250, 80, 230);
+        createPath(300, 40, 290, 230);
+        createPath(40, 170, 290, 490);
+        createPath(150, 40, 420, 490);
+    }
+}
+
+/* ---------- START GAME ---------- */
 
 start.addEventListener("mouseover", () => {
     started = true;
 });
+
+/* ---------- LOSE CONDITION ---------- */
 
 document.addEventListener("mouseover", (e) => {
     if (!started) return;
@@ -163,27 +159,32 @@ document.addEventListener("mouseover", (e) => {
 
     if (!safeZones.includes(e.target.id) && !isPath) {
         alert("You lost! Restarting level.");
-        started = false;
-        loadLevel(currentLevel - 1);
+        loadLevel(currentLevel);
     }
 });
+
+/* ---------- WIN CONDITION ---------- */
 
 end.addEventListener("mouseover", () => {
     if (!started) return;
 
-    if (currentLevel < levels.length) {
-        currentLevel++;
-        alert("Level Complete! Welcome to Level " + currentLevel);
-        loadLevel(currentLevel - 1);
-    } else {
+    started = false;
+
+    if (currentLevel === 1) {
+        alert("Level 1 Complete! Loading Level 2...");
+        loadLevel(2);
+        return;
+    }
+
+    if (currentLevel === 2) {
         scare.style.display = "block";
         scream.play();
     }
 });
 
-/* ---------- START GAME ---------- */
+/* ---------- START FIRST LEVEL ---------- */
 
-loadLevel(0);
+loadLevel(1);
 </script>
 
 </body>
