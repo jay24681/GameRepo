@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Scary Maze Game</title>
+<title>Scary Maze Game - Multiple Levels</title>
 
 <style>
 body {
@@ -10,89 +10,33 @@ body {
     font-family: Arial;
 }
 
+h1 {
+    margin-bottom: 10px;
+}
+
+#levelText {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
 /* Maze container */
 #maze {
     position: relative;
-    width: 600px;
+    width: 700px;
     height: 500px;
     margin: auto;
     background-color: red; /* walls */
 }
 
-/* Safe white path pieces */
+/* Safe path */
 .path {
     position: absolute;
     background-color: white;
 }
 
-/* More complex turning maze path */
-
-/* Start horizontal */
-#p1 {
-    width: 150px;
-    height: 40px;
-    top: 220px;
-    left: 70px;
-}
-
-/* Up */
-#p2 {
-    width: 40px;
-    height: 160px;
-    top: 100px;
-    left: 180px;
-}
-
-/* Right */
-#p3 {
-    width: 220px;
-    height: 40px;
-    top: 100px;
-    left: 180px;
-}
-
-/* Down */
-#p4 {
-    width: 40px;
-    height: 180px;
-    top: 100px;
-    left: 360px;
-}
-
-/* Left */
-#p5 {
-    width: 180px;
-    height: 40px;
-    top: 240px;
-    left: 220px;
-}
-
-/* Down again */
-#p6 {
-    width: 40px;
-    height: 160px;
-    top: 240px;
-    left: 220px;
-}
-
-/* Right to finish */
-#p7 {
-    width: 250px;
-    height: 40px;
-    top: 360px;
-    left: 220px;
-}
-
-/* End vertical connection */
-#p8 {
-    width: 40px;
-    height: 80px;
-    top: 360px;
-    left: 470px;
-}
-
-/* START */
-#start {
+/* Start + End */
+#start, #end {
     position: absolute;
     width: 70px;
     height: 40px;
@@ -100,28 +44,12 @@ body {
     border: 2px solid black;
     font-weight: bold;
     line-height: 40px;
-    top: 220px;
-    left: 0;
+    text-align: center;
     z-index: 10;
     cursor: pointer;
 }
 
-/* END */
-#end {
-    position: absolute;
-    width: 70px;
-    height: 40px;
-    background-color: yellow;
-    border: 2px solid black;
-    font-weight: bold;
-    line-height: 40px;
-    top: 400px;
-    left: 510px;
-    z-index: 10;
-    cursor: pointer;
-}
-
-/* Jumpscare image */
+/* Jumpscare */
 #scare {
     display: none;
     position: fixed;
@@ -137,24 +65,12 @@ body {
 <body>
 
 <h1>Scary Maze Game</h1>
-<p>Move from START to END without touching red walls.</p>
+<div id="levelText">Level 1</div>
+<p>Reach END without touching red walls.</p>
 
 <div id="maze">
-
     <div id="start">START</div>
-
-    <!-- Turning maze path -->
-    <div class="path" id="p1"></div>
-    <div class="path" id="p2"></div>
-    <div class="path" id="p3"></div>
-    <div class="path" id="p4"></div>
-    <div class="path" id="p5"></div>
-    <div class="path" id="p6"></div>
-    <div class="path" id="p7"></div>
-    <div class="path" id="p8"></div>
-
     <div id="end">END</div>
-
 </div>
 
 <img id="scare" src="scare.jpg">
@@ -162,18 +78,83 @@ body {
 
 <script>
 let started = false;
+let currentLevel = 1;
 
+const maze = document.getElementById("maze");
 const start = document.getElementById("start");
 const end = document.getElementById("end");
 const scare = document.getElementById("scare");
 const scream = document.getElementById("scream");
+const levelText = document.getElementById("levelText");
 
-/* Start game */
+/* ---------- LEVEL DATA ---------- */
+
+const levels = [
+    {
+        name: "Level 1",
+        start: { top: 220, left: 0 },
+        end: { top: 380, left: 560 },
+        paths: [
+            { width: 150, height: 40, top: 220, left: 70 },
+            { width: 40, height: 160, top: 100, left: 180 },
+            { width: 220, height: 40, top: 100, left: 180 },
+            { width: 40, height: 180, top: 100, left: 360 },
+            { width: 220, height: 40, top: 240, left: 360 },
+            { width: 40, height: 180, top: 240, left: 540 },
+            { width: 100, height: 40, top: 380, left: 460 }
+        ]
+    },
+
+    {
+        name: "Level 2",
+        start: { top: 100, left: 0 },
+        end: { top: 420, left: 600 },
+        paths: [
+            { width: 180, height: 40, top: 100, left: 70 },
+            { width: 40, height: 220, top: 100, left: 210 },
+            { width: 250, height: 40, top: 280, left: 210 },
+            { width: 40, height: 180, top: 280, left: 420 },
+            { width: 220, height: 40, top: 420, left: 420 }
+        ]
+    }
+];
+
+/* ---------- BUILD LEVEL ---------- */
+
+function loadLevel(levelIndex) {
+    document.querySelectorAll(".path").forEach(p => p.remove());
+
+    const level = levels[levelIndex];
+
+    levelText.textContent = level.name;
+
+    start.style.top = level.start.top + "px";
+    start.style.left = level.start.left + "px";
+
+    end.style.top = level.end.top + "px";
+    end.style.left = level.end.left + "px";
+
+    level.paths.forEach(segment => {
+        const div = document.createElement("div");
+        div.classList.add("path");
+
+        div.style.width = segment.width + "px";
+        div.style.height = segment.height + "px";
+        div.style.top = segment.top + "px";
+        div.style.left = segment.left + "px";
+
+        maze.appendChild(div);
+    });
+
+    started = false;
+}
+
+/* ---------- GAME LOGIC ---------- */
+
 start.addEventListener("mouseover", () => {
     started = true;
 });
 
-/* Lose condition */
 document.addEventListener("mouseover", (e) => {
     if (!started) return;
 
@@ -181,18 +162,28 @@ document.addEventListener("mouseover", (e) => {
     const isPath = e.target.classList.contains("path");
 
     if (!safeZones.includes(e.target.id) && !isPath) {
-        alert("You lost!");
+        alert("You lost! Restarting level.");
         started = false;
+        loadLevel(currentLevel - 1);
     }
 });
 
-/* Win condition */
 end.addEventListener("mouseover", () => {
-    if (started) {
+    if (!started) return;
+
+    if (currentLevel < levels.length) {
+        currentLevel++;
+        alert("Level Complete! Welcome to Level " + currentLevel);
+        loadLevel(currentLevel - 1);
+    } else {
         scare.style.display = "block";
         scream.play();
     }
 });
+
+/* ---------- START GAME ---------- */
+
+loadLevel(0);
 </script>
 
 </body>
