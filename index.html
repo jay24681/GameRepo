@@ -106,4 +106,112 @@ end.addEventListener("mouseover", () => {
 </script>
 
 </body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Scary Maze Game</title>
+
+<style>
+body {
+    text-align: center;
+    font-family: Arial;
+}
+
+/* Maze container */
+#maze {
+    position: relative;
+    width: 500px;
+    height: 250px;
+    margin: auto;
+    background-color: red; /* walls */
+}
+
+/* Safe path (CONNECTED to start and end) */
+#path {
+    position: absolute;
+    width: 360px;
+    height: 50px;
+    background-color: white;
+    top: 100px;
+    left: 70px; /* matches start width */
+}
+
+/* Start and End */
+#start, #end {
+    position: absolute;
+    width: 70px;
+    height: 50px;
+    background-color: green;
+    color: white;
+    line-height: 50px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#start { left: 0; top: 100px; }
+#end { right: 0; top: 100px; }
+
+/* Jump scare */
+#scare {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Scary Maze Game</h1>
+<p>Move your mouse from START to END without touching the walls.</p>
+
+<div id="maze">
+    <div id="start">START</div>
+    <div id="path"></div>
+    <div id="end">END</div>
+</div>
+
+<img id="scare" src="scare.jpg">
+<audio id="scream" src="scream.mp3"></audio>
+
+<script>
+let started = false;
+
+const start = document.getElementById("start");
+const end = document.getElementById("end");
+const scare = document.getElementById("scare");
+const scream = document.getElementById("scream");
+
+// Start game
+start.addEventListener("mouseover", () => {
+    started = true;
+});
+
+// Lose when touching anything NOT safe
+document.addEventListener("mouseover", (e) => {
+    if (!started) return;
+
+    const safeZones = ["start", "path", "end"];
+
+    if (!safeZones.includes(e.target.id)) {
+        alert("You lost!");
+        started = false;
+    }
+});
+
+// Win condition
+end.addEventListener("mouseover", () => {
+    if (started) {
+        scare.style.display = "block";
+        scream.play();
+    }
+});
+</script>
+
+</body>
 </html>
