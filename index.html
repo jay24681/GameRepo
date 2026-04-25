@@ -13,38 +13,115 @@ body {
 /* Maze container */
 #maze {
     position: relative;
-    width: 500px;
-    height: 250px;
+    width: 600px;
+    height: 500px;
     margin: auto;
     background-color: red; /* walls */
 }
 
-/* Safe path (CONNECTED to start and end) */
-#path {
+/* Safe white path pieces */
+.path {
     position: absolute;
-    width: 360px;
-    height: 50px;
     background-color: white;
-    top: 100px;
-    left: 70px; /* matches start width */
 }
 
-/* Start and End */
-#start, #end {
+/* More complex turning maze path */
+
+/* Start horizontal */
+#p1 {
+    width: 150px;
+    height: 40px;
+    top: 220px;
+    left: 70px;
+}
+
+/* Up */
+#p2 {
+    width: 40px;
+    height: 160px;
+    top: 100px;
+    left: 180px;
+}
+
+/* Right */
+#p3 {
+    width: 220px;
+    height: 40px;
+    top: 100px;
+    left: 180px;
+}
+
+/* Down */
+#p4 {
+    width: 40px;
+    height: 180px;
+    top: 100px;
+    left: 360px;
+}
+
+/* Left */
+#p5 {
+    width: 180px;
+    height: 40px;
+    top: 240px;
+    left: 220px;
+}
+
+/* Down again */
+#p6 {
+    width: 40px;
+    height: 160px;
+    top: 240px;
+    left: 220px;
+}
+
+/* Right to finish */
+#p7 {
+    width: 250px;
+    height: 40px;
+    top: 360px;
+    left: 220px;
+}
+
+/* End vertical connection */
+#p8 {
+    width: 40px;
+    height: 80px;
+    top: 360px;
+    left: 470px;
+}
+
+/* START */
+#start {
     position: absolute;
     width: 70px;
-    height: 50px;
-    background-color: green;
-    color: white;
-    line-height: 50px;
+    height: 40px;
+    background-color: yellow;
+    border: 2px solid black;
     font-weight: bold;
-    text-align: center;
+    line-height: 40px;
+    top: 220px;
+    left: 0;
+    z-index: 10;
+    cursor: pointer;
 }
 
-#start { left: 0; top: 100px; }
-#end { right: 0; top: 100px; }
+/* END */
+#end {
+    position: absolute;
+    width: 70px;
+    height: 40px;
+    background-color: yellow;
+    border: 2px solid black;
+    font-weight: bold;
+    line-height: 40px;
+    top: 400px;
+    left: 510px;
+    z-index: 10;
+    cursor: pointer;
+}
 
-/* Jump scare */
+/* Jumpscare image */
 #scare {
     display: none;
     position: fixed;
@@ -60,12 +137,24 @@ body {
 <body>
 
 <h1>Scary Maze Game</h1>
-<p>Move your mouse from START to END without touching the walls.</p>
+<p>Move from START to END without touching red walls.</p>
 
 <div id="maze">
+
     <div id="start">START</div>
-    <div id="path"></div>
+
+    <!-- Turning maze path -->
+    <div class="path" id="p1"></div>
+    <div class="path" id="p2"></div>
+    <div class="path" id="p3"></div>
+    <div class="path" id="p4"></div>
+    <div class="path" id="p5"></div>
+    <div class="path" id="p6"></div>
+    <div class="path" id="p7"></div>
+    <div class="path" id="p8"></div>
+
     <div id="end">END</div>
+
 </div>
 
 <img id="scare" src="scare.jpg">
@@ -79,24 +168,25 @@ const end = document.getElementById("end");
 const scare = document.getElementById("scare");
 const scream = document.getElementById("scream");
 
-// Start game
+/* Start game */
 start.addEventListener("mouseover", () => {
     started = true;
 });
 
-// Lose when touching anything NOT safe
+/* Lose condition */
 document.addEventListener("mouseover", (e) => {
     if (!started) return;
 
-    const safeZones = ["start", "path", "end"];
+    const safeZones = ["start", "end"];
+    const isPath = e.target.classList.contains("path");
 
-    if (!safeZones.includes(e.target.id)) {
+    if (!safeZones.includes(e.target.id) && !isPath) {
         alert("You lost!");
         started = false;
     }
 });
 
-// Win condition
+/* Win condition */
 end.addEventListener("mouseover", () => {
     if (started) {
         scare.style.display = "block";
@@ -104,114 +194,3 @@ end.addEventListener("mouseover", () => {
     }
 });
 </script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Scary Maze Game</title>
-
-<style>
-body {
-    text-align: center;
-    font-family: Arial;
-}
-
-/* Maze container */
-#maze {
-    position: relative;
-    width: 500px;
-    height: 250px;
-    margin: auto;
-    background-color: red; /* walls */
-}
-
-/* Safe path (CONNECTED to start and end) */
-#path {
-    position: absolute;
-    width: 360px;
-    height: 50px;
-    background-color: white;
-    top: 100px;
-    left: 70px; /* matches start width */
-}
-
-/* Start and End */
-#start, #end {
-    position: absolute;
-    width: 70px;
-    height: 50px;
-    background-color: green;
-    color: white;
-    line-height: 50px;
-    font-weight: bold;
-    text-align: center;
-}
-
-#start { left: 0; top: 100px; }
-#end { right: 0; top: 100px; }
-
-/* Jump scare */
-#scare {
-    display: none;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 999;
-}
-</style>
-</head>
-
-<body>
-
-<h1>Scary Maze Game</h1>
-<p>Move your mouse from START to END without touching the walls.</p>
-
-<div id="maze">
-    <div id="start">START</div>
-    <div id="path"></div>
-    <div id="end">END</div>
-</div>
-
-<img id="scare" src="scare.jpg">
-<audio id="scream" src="scream.mp3"></audio>
-
-<script>
-let started = false;
-
-const start = document.getElementById("start");
-const end = document.getElementById("end");
-const scare = document.getElementById("scare");
-const scream = document.getElementById("scream");
-
-// Start game
-start.addEventListener("mouseover", () => {
-    started = true;
-});
-
-// Lose when touching anything NOT safe
-document.addEventListener("mouseover", (e) => {
-    if (!started) return;
-
-    const safeZones = ["start", "path", "end"];
-
-    if (!safeZones.includes(e.target.id)) {
-        alert("You lost!");
-        started = false;
-    }
-});
-
-// Win condition
-end.addEventListener("mouseover", () => {
-    if (started) {
-        scare.style.display = "block";
-        scream.play();
-    }
-});
-</script>
-
-</body>
-</html>
