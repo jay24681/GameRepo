@@ -75,6 +75,7 @@ h1 {
 <script>
 let started = false;
 let currentLevel = 1;
+let canWin = false;
 
 const maze = document.getElementById("maze");
 const start = document.getElementById("start");
@@ -105,7 +106,9 @@ function createPath(width, height, top, left) {
 
 function loadLevel(level) {
     clearPaths();
+
     started = false;
+    canWin = false;
     currentLevel = level;
 
     if (level === 1) {
@@ -147,6 +150,7 @@ function loadLevel(level) {
 
 start.addEventListener("mouseover", () => {
     started = true;
+    canWin = true;
 });
 
 /* ---------- LOSE CONDITION ---------- */
@@ -166,9 +170,10 @@ document.addEventListener("mouseover", (e) => {
 /* ---------- WIN CONDITION ---------- */
 
 end.addEventListener("mouseover", () => {
-    if (!started) return;
+    if (!started || !canWin) return;
 
     started = false;
+    canWin = false;
 
     if (currentLevel === 1) {
         alert("Level 1 Complete! Loading Level 2...");
